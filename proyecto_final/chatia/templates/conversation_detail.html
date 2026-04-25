@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ conversation.title }}{% endblock %}
+
+{% block content %}
+    <h2>{{ conversation.title }}</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                <strong>{{ message.sender }}:</strong> {{ message.content }}
+            </div>
+            <br>
+        {% endfor %}
+    {% else %}
+        <p>Esta conversación no tiene mensajes.</p>
+    {% endif %}
+
+    <h3>Enviar mensaje</h3>
+
+    <form method="post" action="{% url 'send_message' conversation.id %}">
+        {% csrf_token %}
+        <textarea name="content" rows="4" cols="50" placeholder="Escribe tu mensaje aquí"></textarea>
+        <br>
+        <button type="submit">Enviar</button>
+    </form>
+{% endblock %}

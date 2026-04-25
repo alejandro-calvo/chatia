@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+    <h2>Perfil</h2>
+
+    <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
+
+    {% if profile.alias %}
+        <p><strong>Alias:</strong> {{ profile.alias }}</p>
+    {% else %}
+        <p><strong>Alias:</strong> No definido</p>
+    {% endif %}
+
+    <p><strong>Modelo por defecto:</strong> {{ profile.preferred_model }}</p>
+    <p><strong>Temperatura:</strong> {{ profile.temperature }}</p>
+    <p><strong>Número de chats:</strong> {{ total_conversations }}</p>
+    <p><strong>Número de mensajes:</strong> {{ total_messages }}</p>
+{% endblock %}

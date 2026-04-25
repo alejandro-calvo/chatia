@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Chats{% endblock %}
+
+{% block content %}
+    <h2>Mis chats</h2>
+
+    <h3>Crear nuevo chat</h3>
+
+    <form method="post" action="{% url 'new_conversation' %}">
+        {% csrf_token %}
+        <label for="title">Título del chat:</label>
+        <input type="text" id="title" name="title" placeholder="Escribe un título o déjalo vacío">
+        <button type="submit">Nuevo chat</button>
+    </form>
+
+    {% if conversations %}
+        <ul>
+            {% for conversation in conversations %}
+                <li>
+                    <a href="{% url 'conversation_detail' conversation.id %}">
+                        {{ conversation.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No hay conversaciones guardadas.</p>
+    {% endif %}
+{% endblock %}

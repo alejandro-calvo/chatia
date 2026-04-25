@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Principal{% endblock %}
+
+{% block content %}
+    <h2>Página principal</h2>
+    <p>Aplicación web de chat con IA desarrollada en Django.</p>
+
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'conversation_list' %}">Ir a mis chats</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Iniciar sesión</a></p>
+    {% endif %}
+{% endblock %}

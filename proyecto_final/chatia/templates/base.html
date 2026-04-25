@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ChatIA{% endblock %}</title>
+</head>
+<body>
+    <header id="cabecera">
+        <h1><a href="{% url 'index' %}">ChatIA</a></h1>
+
+        {% if user.is_authenticated %}
+            <p>Usuario autenticado: {{ user.username }}</p>
+        {% else %}
+            <p>Usuario no autenticado</p>
+        {% endif %}
+    </header>
+
+    <nav id="menu">
+        <ul>
+            {% if request.path != '/' %}
+                <li><a href="{% url 'index' %}">Principal</a></li>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                {% if request.path != '/conversations/' %}
+                    <li><a href="{% url 'conversation_list' %}">Chats</a></li>
+                {% endif %}
+
+                {% if request.path != '/profile/' %}
+                    <li><a href="{% url 'profile' %}">Perfil</a></li>
+                {% endif %}
+
+                {% if request.path != '/settings/' %}
+                    <li><a href="{% url 'settings' %}">Configuración</a></li>
+                {% endif %}
+
+                {% if request.path != '/help/' %}
+                    <li><a href="{% url 'help' %}">Ayuda</a></li>
+                {% endif %}
+
+                <li><a href="/admin/">Administración</a></li>
+
+                <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Cerrar sesión</button>
+                    </form>
+                </li>
+            {% else %}
+                {% if request.path != '/login/' %}
+                    <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </nav>
+
+    <main id="contenido">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer id="pie">
+        <p>Pie de página de ChatIA</p>
+    </footer>
+</body>
+</html>
