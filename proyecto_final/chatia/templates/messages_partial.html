@@ -1,0 +1,15 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="chat-message {% if message.sender == 'usuario' %}user-message{% else %}ai-message{% endif %} mb-3 p-3 rounded border">
+            <strong>{{ message.sender }}:</strong>
+
+            <div class="mt-2 message-content">
+                {{ message.content|linebreaksbr }}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-secondary">
+        Esta conversación no tiene mensajes.
+    </div>
+{% endif %}

@@ -1,66 +1,102 @@
+{% load static %}
+<!-- Carga la etiqueta static de Django para poder enlazar ficheros de la carpeta static -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+
     <title>{% block title %}ChatIA{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap descargado dentro de la carpeta static -->
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
+
+    <!-- CSS propio de la práctica -->
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+
+    <!-- HTMX para actualizaciones parciales -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
-<body>
-    <header id="cabecera">
-        <h1><a href="{% url 'index' %}">ChatIA</a></h1>
 
-        {% if user.is_authenticated %}
-            <p>Usuario autenticado: {{ user.username }}</p>
-        {% else %}
-            <p>Usuario no autenticado</p>
-        {% endif %}
-    </header>
+<body class="bg-body-tertiary">
 
-    <nav id="menu">
-        <ul>
-            {% if request.path != '/' %}
-                <li><a href="{% url 'index' %}">Principal</a></li>
-            {% endif %}
+    <header id="cabecera" class="container mt-4 mb-3">
+        <div class="bg-dark text-white rounded shadow-sm border p-3">
+            <h1 class="h3 mb-2">
+                <a href="{% url 'index' %}" class="text-decoration-none text-white">ChatIA</a>
+            </h1>
 
             {% if user.is_authenticated %}
-                {% if request.path != '/conversations/' %}
-                    <li><a href="{% url 'conversation_list' %}">Chats</a></li>
-                {% endif %}
-
-                {% if request.path != '/profile/' %}
-                    <li><a href="{% url 'profile' %}">Perfil</a></li>
-                {% endif %}
-
-                {% if request.path != '/settings/' %}
-                    <li><a href="{% url 'settings' %}">Configuración</a></li>
-                {% endif %}
-
-                {% if request.path != '/help/' %}
-                    <li><a href="{% url 'help' %}">Ayuda</a></li>
-                {% endif %}
-
-                <li><a href="/admin/">Administración</a></li>
-
-                <li>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar sesión</button>
-                    </form>
-                </li>
+                <p class="mb-0 small">Usuario autenticado: {{ user.username }}</p>
             {% else %}
-                {% if request.path != '/login/' %}
-                    <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
-                {% endif %}
+                <p class="mb-0 small">Usuario no autenticado</p>
             {% endif %}
-        </ul>
+        </div>
+    </header>
+
+    <nav id="menu" class="container mb-3">
+        <div class="bg-white rounded shadow-sm border">
+            <ul class="nav nav-pills p-3 gap-2">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}">Principal</a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'conversation_list' %}">Chats</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">Perfil</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'settings' %}">Configuración</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'help' %}">Ayuda</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">Administración</a>
+                    </li>
+
+                    <li class="nav-item ms-auto">
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item ms-auto">
+                        <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
 
-    <main id="contenido">
-        {% block content %}
-        {% endblock %}
+    <main id="contenido" class="container mb-3">
+        <div class="bg-white p-4 rounded shadow-sm border">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
-    <footer id="pie">
-        <p>Pie de página de ChatIA</p>
+    <footer id="pie" class="container mb-4">
+        <div class="bg-white p-3 rounded shadow-sm border text-muted small text-center">
+            Conversaciones totales: {{ total_conversations }} |
+            Mensajes totales: {{ total_messages }} |
+            Conversaciones del usuario: {{ user_conversations }} |
+            Mensajes del usuario: {{ user_messages }}
+        </div>
     </footer>
+
+    <!-- Bootstrap JS descargado dentro de la carpeta static -->
+    <script src="{% static 'bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

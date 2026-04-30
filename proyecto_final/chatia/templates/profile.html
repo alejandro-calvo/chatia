@@ -1,20 +1,30 @@
 {% extends 'base.html' %}
+<!-- Hereda la estructura general -->
 
 {% block title %}Perfil{% endblock %}
 
 {% block content %}
-    <h2>Perfil</h2>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2">Perfil</h2>
+    </div>
 
-    <p><strong>Nombre de usuario:</strong> {{ user.username }}</p>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Nombre de usuario:</strong> {{ user.username }}</li>
 
-    {% if profile.alias %}
-        <p><strong>Alias:</strong> {{ profile.alias }}</p>
-    {% else %}
-        <p><strong>Alias:</strong> No definido</p>
-    {% endif %}
+        {% if profile.alias %}
+            <li class="list-group-item"><strong>Alias:</strong> {{ profile.alias }}</li>
+        {% else %}
+            <li class="list-group-item"><strong>Alias:</strong> No definido</li>
+        {% endif %}
 
-    <p><strong>Modelo por defecto:</strong> {{ profile.preferred_model }}</p>
-    <p><strong>Temperatura:</strong> {{ profile.temperature }}</p>
-    <p><strong>Número de chats:</strong> {{ total_conversations }}</p>
-    <p><strong>Número de mensajes:</strong> {{ total_messages }}</p>
+        <li class="list-group-item"><strong>Modelo por defecto:</strong> {{ profile.preferred_model }}</li>
+        <li class="list-group-item"><strong>Temperatura:</strong> {{ profile.temperature }}</li>
+
+        <li class="list-group-item"><strong>Número de chats:</strong> {{ total_conversations_user_profile }}</li>
+        <li class="list-group-item"><strong>Número de mensajes:</strong> {{ total_messages_user_profile }}</li>
+    </ul>
+
+    <div class="mt-3">
+        <a href="{% url 'settings' %}" class="btn btn-primary">Editar configuración</a>
+    </div>
 {% endblock %}

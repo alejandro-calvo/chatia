@@ -1,27 +1,39 @@
 {% extends 'base.html' %}
+<!-- Esta plantilla hereda toda la estructura general de base.html -->
 
 {% block title %}{{ conversation.title }}{% endblock %}
 
 {% block content %}
-    <h2>{{ conversation.title }}</h2>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2 mb-0">{{ conversation.title }}</h2>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div>
-                <strong>{{ message.sender }}:</strong> {{ message.content }}
-            </div>
-            <br>
-        {% endfor %}
-    {% else %}
-        <p>Esta conversación no tiene mensajes.</p>
-    {% endif %}
+        <a href="{% url 'conversation_json' conversation.id %}" class="btn btn-outline-secondary btn-sm">
+            Ver conversación en JSON
+        </a>
+    </div>
 
-    <h3>Enviar mensaje</h3>
+    <div id="messages-container" class="messages-box mb-4">
+        {% include 'messages_partial.html' %}
+    </div>
 
-    <form method="post" action="{% url 'send_message' conversation.id %}">
-        {% csrf_token %}
-        <textarea name="content" rows="4" cols="50" placeholder="Escribe tu mensaje aquí"></textarea>
-        <br>
-        <button type="submit">Enviar</button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="h5 card-title">Enviar mensaje</h3>
+
+            <form
+                hx-post="{% url 'send_message' conversation.id %}"
+                hx-target="#messages-container"
+                hx-swap="innerHTML"
+                hx-on::after-request="this.reset()"
+            >
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <textarea name="content" rows="4" class="form-control" placeholder="Escribe tu mensaje aquí"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

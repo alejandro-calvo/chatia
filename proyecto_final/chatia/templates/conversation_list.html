@@ -1,30 +1,50 @@
 {% extends 'base.html' %}
+<!-- Hereda la estructura general -->
 
 {% block title %}Chats{% endblock %}
 
 {% block content %}
-    <h2>Mis chats</h2>
+    <!-- Título de la página -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2">Mis chats</h2>
+    </div>
 
-    <h3>Crear nuevo chat</h3>
+    <!-- Tarjeta para crear una nueva conversación -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="h5 card-title">Crear nuevo chat</h3>
 
-    <form method="post" action="{% url 'new_conversation' %}">
-        {% csrf_token %}
-        <label for="title">Título del chat:</label>
-        <input type="text" id="title" name="title" placeholder="Escribe un título o déjalo vacío">
-        <button type="submit">Nuevo chat</button>
-    </form>
+            <!--
+                Formulario normal para crear un nuevo chat.
+                Si el título está vacío, en la vista se genera uno automático.
+            -->
+            <form method="post" action="{% url 'new_conversation' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Título del chat</label>
+                    <input type="text" id="title" name="title" class="form-control" placeholder="Escribe un título o déjalo vacío">
+                </div>
+                <button type="submit" class="btn btn-primary">Nuevo chat</button>
+            </form>
+        </div>
+    </div>
 
+    <!--
+        Si hay conversaciones, se muestran en forma de lista.
+        Cada una enlaza al detalle de esa conversación.
+    -->
     {% if conversations %}
-        <ul>
+        <div class="list-group">
             {% for conversation in conversations %}
-                <li>
-                    <a href="{% url 'conversation_detail' conversation.id %}">
-                        {{ conversation.title }}
-                    </a>
-                </li>
+                <a href="{% url 'conversation_detail' conversation.id %}" class="list-group-item list-group-item-action">
+                    {{ conversation.title }}
+                </a>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <p>No hay conversaciones guardadas.</p>
+        <!-- Si no hay conversaciones, mostramos aviso -->
+        <div class="alert alert-secondary mb-0">
+            No hay conversaciones guardadas.
+        </div>
     {% endif %}
 {% endblock %}

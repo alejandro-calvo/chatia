@@ -1,14 +1,25 @@
 {% extends 'base.html' %}
+<!-- Hereda cabecera, menú, contenido y pie -->
 
 {% block title %}Principal{% endblock %}
 
 {% block content %}
-    <h2>Página principal</h2>
-    <p>Aplicación web de chat con IA desarrollada en Django.</p>
+    <!-- Encabezado de la página principal -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2">Principal</h2>
+    </div>
 
+    <!-- Descripción breve de la aplicación -->
+    <p class="lead">Aplicación web de chat con IA desarrollada en Django.</p>
+    <p>Aquí puedes crear conversaciones, guardar mensajes y gestionar tu configuración.</p>
+
+    <!--
+        Si el usuario está autenticado, le llevamos a sus chats.
+        Si no, le llevamos al login.
+    -->
     {% if user.is_authenticated %}
-        <p><a href="{% url 'conversation_list' %}">Ir a mis chats</a></p>
+        <a href="{% url 'conversation_list' %}" class="btn btn-primary">Ir a mis chats</a>
     {% else %}
-        <p><a href="{% url 'login' %}">Iniciar sesión</a></p>
+        <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
     {% endif %}
 {% endblock %}

@@ -1,24 +1,59 @@
-{% extends 'base.html' %}
+{% load static %}
+<!-- Carga static para usar el CSS -->
 
-{% block title %}Iniciar sesión{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
 
-{% block content %}
-    <h2>Iniciar sesión</h2>
+    <!-- Bootstrap descargado dentro de la carpeta static -->
+    <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 
-    {% if form.errors %}
-        <p>Usuario o contraseña incorrectos.</p>
-    {% endif %}
+    <!-- CSS propio de la práctica -->
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
 
-    <form method="post">
-        {% csrf_token %}
-        <p>
-            <label for="id_username">Usuario:</label>
-            <input type="text" name="username" id="id_username">
-        </p>
-        <p>
-            <label for="id_password">Contraseña:</label>
-            <input type="password" name="password" id="id_password">
-        </p>
-        <button type="submit">Entrar</button>
-    </form>
-{% endblock %}
+<!--
+    Clases para centrar el formulario verticalmente en pantalla
+    y darle estilo con Bootstrap y CSS propio.
+-->
+<body class="d-flex align-items-center py-4 bg-body-tertiary login-body">
+
+    <main class="form-signin w-100 m-auto">
+        <!-- Formulario de login -->
+        <form method="post" class="bg-white p-4 rounded shadow-sm border">
+            {% csrf_token %}
+
+            <h1 class="h3 mb-3 fw-normal text-center">Iniciar sesión</h1>
+
+            <!-- Si el login falla, mostramos aviso -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Usuario o contraseña incorrectos.
+                </div>
+            {% endif %}
+
+            <!-- Input de usuario -->
+            <div class="form-floating mb-2">
+                <input type="text" name="username" id="id_username" class="form-control" placeholder="Usuario">
+                <label for="id_username">Usuario</label>
+            </div>
+
+            <!-- Input de contraseña -->
+            <div class="form-floating mb-3">
+                <input type="password" name="password" id="id_password" class="form-control" placeholder="Contraseña">
+                <label for="id_password">Contraseña</label>
+            </div>
+
+            <!-- Botón para enviar el formulario -->
+            <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
+
+            <!-- Enlace para volver a la página principal -->
+            <p class="mt-3 mb-0 text-center">
+                <a href="{% url 'index' %}">Volver a la página principal</a>
+            </p>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,28 +1,31 @@
 {% extends 'base.html' %}
+<!-- Hereda la estructura general -->
 
 {% block title %}Configuración{% endblock %}
 
 {% block content %}
-    <h2>Configuración</h2>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2">Configuración</h2>
+    </div>
 
-    <form method="post">
+    <form method="post" class="w-75">
         {% csrf_token %}
 
-        <p>
-            <label for="alias">Alias:</label>
-            <input type="text" id="alias" name="alias" value="{{ profile.alias }}">
-        </p>
+        <div class="mb-3">
+            <label for="alias" class="form-label">Alias</label>
+            <input type="text" id="alias" name="alias" value="{{ profile.alias }}" class="form-control">
+        </div>
 
-        <p>
-            <label for="preferred_model">Modelo por defecto:</label>
-            <input type="text" id="preferred_model" name="preferred_model" value="{{ profile.preferred_model }}">
-        </p>
+        <div class="mb-3">
+            <label for="preferred_model" class="form-label">Modelo por defecto</label>
+            <input type="text" id="preferred_model" name="preferred_model" value="{{ profile.preferred_model }}" class="form-control">
+        </div>
 
-        <p>
-            <label for="temperature">Temperatura:</label>
-            <input type="number" id="temperature" name="temperature" step="0.1" min="0" max="1" value="{{ profile.temperature }}">
-        </p>
+        <div class="mb-3">
+            <label for="temperature" class="form-label">Temperatura</label>
+            <input type="number" id="temperature" name="temperature" step="0.1" min="0" max="1" value="{{ profile.temperature }}" class="form-control">
+        </div>
 
-        <button type="submit">Guardar configuración</button>
+        <button type="submit" class="btn btn-primary">Guardar configuración</button>
     </form>
 {% endblock %}
