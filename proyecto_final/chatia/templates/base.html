@@ -10,6 +10,9 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Icono que aparece en la pestaña del navegador -->
+    <link rel="icon" type="image/png" href="{% static 'logo.png' %}">
+
     <!-- Bootstrap descargado dentro de la carpeta static -->
     <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}">
 
@@ -22,20 +25,41 @@
 
 <body class="bg-body-tertiary">
 
+    <!-- Cabecera común de la aplicación -->
     <header id="cabecera" class="container mt-4 mb-3">
         <div class="bg-dark text-white rounded shadow-sm border p-3">
-            <h1 class="h3 mb-2">
-                <a href="{% url 'index' %}" class="text-decoration-none text-white">ChatIA</a>
-            </h1>
 
-            {% if user.is_authenticated %}
-                <p class="mb-0 small">Usuario autenticado: {{ user.username }}</p>
-            {% else %}
-                <p class="mb-0 small">Usuario no autenticado</p>
-            {% endif %}
+            <!-- Bloque de logo y título de la aplicación -->
+            <div class="d-flex align-items-center">
+
+                <!-- Imagen cargada desde static -->
+                <img
+                    src="{% static 'logo.png' %}"
+                    alt="Logo de ChatIA"
+                    class="me-3"
+                    style="width: 55px; height: 55px; object-fit: contain;"
+                >
+
+                <!-- Título y usuario autenticado -->
+                <div>
+                    <h1 class="h3 mb-1">
+                        <a href="{% url 'index' %}" class="text-decoration-none text-white">
+                            ChatIA
+                        </a>
+                    </h1>
+
+                    {% if user.is_authenticated %}
+                        <p class="mb-0 small">Usuario autenticado: {{ user.username }}</p>
+                    {% else %}
+                        <p class="mb-0 small">Usuario no autenticado</p>
+                    {% endif %}
+                </div>
+            </div>
+
         </div>
     </header>
 
+    <!-- Menú horizontal común -->
     <nav id="menu" class="container mb-3">
         <div class="bg-white rounded shadow-sm border">
             <ul class="nav nav-pills p-3 gap-2">
@@ -68,7 +92,9 @@
                     <li class="nav-item ms-auto">
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                Cerrar sesión
+                            </button>
                         </form>
                     </li>
                 {% else %}
@@ -80,6 +106,7 @@
         </div>
     </nav>
 
+    <!-- Zona principal de contenido -->
     <main id="contenido" class="container mb-3">
         <div class="bg-white p-4 rounded shadow-sm border">
             {% block content %}
@@ -87,6 +114,7 @@
         </div>
     </main>
 
+    <!-- Pie común con métricas -->
     <footer id="pie" class="container mb-4">
         <div class="bg-white p-3 rounded shadow-sm border text-muted small text-center">
             Conversaciones totales: {{ total_conversations }} |

@@ -20,6 +20,66 @@
         <li class="list-group-item"><strong>Modelo por defecto:</strong> {{ profile.preferred_model }}</li>
         <li class="list-group-item"><strong>Temperatura:</strong> {{ profile.temperature }}</li>
 
+        <!-- Fondo de los mensajes del usuario -->
+        <li class="list-group-item">
+            <strong>Fondo de mis mensajes:</strong>
+
+            {% if profile.user_message_background == 'user-bg-orange' %}
+                Naranja claro
+            {% elif profile.user_message_background == 'user-bg-blue' %}
+                Azul claro
+            {% elif profile.user_message_background == 'user-bg-green' %}
+                Verde claro
+            {% else %}
+                No definido
+            {% endif %}
+        </li>
+
+        <!-- Fondo de los mensajes de la IA -->
+        <li class="list-group-item">
+            <strong>Fondo de mensajes de IA:</strong>
+
+            {% if profile.ai_message_background == 'ai-bg-yellow' %}
+                Amarillo claro
+            {% elif profile.ai_message_background == 'ai-bg-light-gray' %}
+                Gris claro
+            {% elif profile.ai_message_background == 'ai-bg-light-red' %}
+                Rojo claro
+            {% else %}
+                No definido
+            {% endif %}
+        </li>
+
+        <!-- Color de letra de los mensajes -->
+        <li class="list-group-item">
+            <strong>Color de letra de los mensajes:</strong>
+
+            {% if profile.user_message_text_color == 'user-text-black' %}
+                Negro
+            {% elif profile.user_message_text_color == 'user-text-blue' %}
+                Azul oscuro
+            {% elif profile.user_message_text_color == 'user-text-red' %}
+                Rojo oscuro
+            {% else %}
+                No definido
+            {% endif %}
+        </li>
+
+        <!-- Tipo de letra de los mensajes -->
+        <li class="list-group-item">
+            <strong>Tipo de letra de los mensajes:</strong>
+
+            {% if profile.user_message_font == 'user-font-arial' %}
+                Arial
+            {% elif profile.user_message_font == 'user-font-times' %}
+                Times New Roman
+            {% elif profile.user_message_font == 'user-font-courier' %}
+                Courier New
+            {% else %}
+                No definido
+            {% endif %}
+        </li>
+
         <li class="list-group-item"><strong>Número de chats:</strong> {{ total_conversations_user_profile }}</li>
         <li class="list-group-item"><strong>Número de mensajes:</strong> {{ total_messages_user_profile }}</li>
     </ul>

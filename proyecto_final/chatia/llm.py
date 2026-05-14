@@ -11,35 +11,81 @@ from dotenv import load_dotenv
 # load_dotenv carga las variables guardadas en el archivo .env
 
 load_dotenv()
-# Aquí se cargan automáticamente las variables del .env
+# Cargamos las variables del fichero .env, por ejemplo NVIDIA_API_KEY
 
 
-def obtener_respuesta_ia(prompt):
+def limpiar_respuesta(texto):
     """
-    Esta función envía el prompt del usuario a NVIDIA Build
-    y devuelve la respuesta generada por el modelo.
+    Limpia algunos símbolos de Markdown que la IA puede devolver.
+
+    No cambiamos el contenido de la respuesta, solo quitamos símbolos
+    que quedan feos en el chat, como **negrita**, títulos con # o citas con >.
+    También cambiamos listas con * por listas con guion normal.
     """
 
-    # Leemos la API key desde el archivo .env
+    # Quitamos símbolos típicos de negrita/código en Markdown
+    texto = texto.replace("**", "")
+    texto = texto.replace("__", "")
+    texto = texto.replace("`", "")
+
+    # Procesamos línea por línea para limpiar títulos, citas y listas
+    lineas = texto.splitlines()
+    lineas_limpias = []
+
+    for linea in lineas:
+        linea = linea.strip()
+
+        # Quita citas tipo: > texto
+        if linea.startswith(">"):
+            linea = linea[1:].strip()
+
+        # Quita títulos tipo: # Título, ## Título, ### Título
+        while linea.startswith("#"):
+            linea = linea[1:].strip()
+
+        # Cambia listas tipo: * texto por: - texto
+        if linea.startswith("* "):
+            linea = "- " + linea[2:].strip()
+
+        lineas_limpias.append(linea)
+
+    return "\n".join(lineas_limpias).strip()
+
+
+def obtener_respuesta_ia(prompt, temperature=0.7):
+    """
+    Envía el prompt del usuario a NVIDIA Build y devuelve la respuesta del modelo.
+
+    temperature controla si la respuesta será más predecible o más creativa.
+    Si no se pasa temperatura, se usa 0.7 como valor por defecto.
+    """
+
+    # Leemos la API key desde el archivo .env o desde variable de entorno
     api_key = os.getenv("NVIDIA_API_KEY")
 
-    # Si no existe la clave, devolvemos mensaje de error
+    # Si no hay clave, devolvemos un mensaje de error
     if not api_key:
         return "No se ha encontrado la clave de NVIDIA en el archivo .env."
 
     # Endpoint de NVIDIA para chat completions
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
 
-    # Cabeceras HTTP necesarias para autenticarse y enviar JSON
+    # Cabeceras necesarias para autenticarnos y enviar JSON
     headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
 
-    # Payload con la información de la petición
+    # Convertimos la temperatura a float por seguridad
+    try:
+        temperature = float(temperature)
+    except (TypeError, ValueError):
+        temperature = 0.7
+
+    # Payload de la petición.
+    # Enviamos el prompt del usuario tal cual, sin añadir instrucciones extra.
     payload = {
         "model": "google/gemma-2-2b-it",
-        # Modelo que usamos en la práctica
 
         "messages": [
             {
@@ -47,19 +93,11 @@ def obtener_respuesta_ia(prompt):
                 "content": prompt
             }
         ],
-        # Solo enviamos el último prompt del usuario
 
-        "temperature": 0.2,
-        # Temperatura baja para respuestas algo más estables
-
+        "temperature": temperature,
         "top_p": 0.7,
-        # Otro parámetro de control de generación
-
         "max_tokens": 1024,
-        # Número máximo de tokens de respuesta
-
         "stream": True,
-        # Pedimos la respuesta en streaming
     }
 
     try:
@@ -72,49 +110,49 @@ def obtener_respuesta_ia(prompt):
             timeout=60
         )
 
-        # Si la respuesta HTTP tiene error, lanza excepción
+        # Si hay un error HTTP, se lanza una excepción
         response.raise_for_status()
 
-        # Aquí iremos acumulando el texto que devuelve la IA
+        # Aquí vamos acumulando el texto que devuelve la IA
         texto_respuesta = ""
 
-        # Recorremos línea por línea la respuesta en streaming
+        # Recorremos la respuesta en streaming línea por línea
         for line in response.iter_lines():
             if line:
                 decoded = line.decode("utf-8")
 
-                # NVIDIA devuelve líneas tipo "data: ..."
+                # NVIDIA devuelve líneas tipo: data: {...}
                 if decoded.startswith("data: "):
                     data = decoded[len("data: "):]
 
-                    # Cuando llega [DONE], se acaba el streaming
+                    # Cuando llega [DONE], termina la respuesta
                     if data == "[DONE]":
                         break
 
                     try:
-                        # Convertimos ese trozo de texto JSON en diccionario
+                        # Convertimos el fragmento JSON en diccionario
                         chunk = json.loads(data)
 
-                        # Sacamos la parte nueva de la respuesta
+                        # Sacamos el contenido generado en este fragmento
                         delta = chunk["choices"][0]["delta"]
 
-                        # Si hay contenido, lo vamos concatenando
+                        # Si hay texto, lo añadimos a la respuesta final
                         if "content" in delta:
                             texto_respuesta += delta["content"]
 
                     except json.JSONDecodeError:
-                        # Si algún trozo no se puede convertir, lo ignoramos
+                        # Si algún fragmento no es JSON válido, lo ignoramos
                         continue
                     except (KeyError, IndexError, TypeError):
-                        # Si falta alguna clave o viene algo inesperado, lo ignoramos
+                        # Si la estructura no viene como esperamos, lo ignoramos
                         continue
 
-        # Si al final no se ha recibido texto útil
+        # Si la IA no devuelve contenido útil
         if texto_respuesta.strip() == "":
             return "La IA no devolvió contenido."
 
-        # Devolvemos la respuesta limpia
-        return texto_respuesta.strip()
+        # Limpiamos la respuesta antes de guardarla/mostrarla
+        return limpiar_respuesta(texto_respuesta)
 
     except requests.exceptions.RequestException:
         # Si falla la conexión o la petición HTTP

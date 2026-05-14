@@ -1,12 +1,35 @@
 {% if messages %}
     {% for message in messages %}
-        <div class="chat-message {% if message.sender == 'usuario' %}user-message{% else %}ai-message{% endif %} mb-3 p-3 rounded border">
-            <strong>{{ message.sender }}:</strong>
+        {% if message.sender == 'usuario' %}
+            <!--
+                Mensaje del usuario.
+                Tiene su propio fondo, y comparte color/tipo de letra con la IA.
+                Si el usuario tiene alias, se muestra el alias en vez de "usuario".
+            -->
+            <div class="chat-message user-message {{ profile.user_message_background }} {{ profile.user_message_text_color }} {{ profile.user_message_font }} mb-3 p-3 rounded border">
+                {% if profile.alias %}
+                    <strong>{{ profile.alias }}:</strong>
+                {% else %}
+                    <strong>usuario:</strong>
+                {% endif %}
 
-            <div class="mt-2 message-content">
-                {{ message.content|linebreaksbr }}
+                <div class="mt-2 message-content">
+                    {{ message.content|linebreaksbr }}
+                </div>
             </div>
-        </div>
+        {% else %}
+            <!--
+                Mensaje de la IA.
+                Se muestra como ChatIA para que coincida con el nombre de la aplicación.
+            -->
+            <div class="chat-message ai-message {{ profile.ai_message_background }} {{ profile.user_message_text_color }} {{ profile.user_message_font }} mb-3 p-3 rounded border">
+                <strong>ChatIA:</strong>
+
+                <div class="mt-2 message-content">
+                    {{ message.content|linebreaksbr }}
+                </div>
+            </div>
+        {% endif %}
     {% endfor %}
 {% else %}
     <div class="alert alert-secondary">

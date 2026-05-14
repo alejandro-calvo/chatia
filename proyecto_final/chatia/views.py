@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 # JsonResponse sirve para devolver datos en formato JSON
 
+from django.views.decorators.cache import never_cache
+# never_cache evita que el navegador muestre versiones antiguas de algunas páginas
+
 from .models import Conversation, Message, UserProfile
 # Importamos nuestros modelos
 
@@ -52,12 +55,16 @@ def index(request):
 
 
 @login_required
+@never_cache
 def conversation_list(request):
     """
     Muestra las conversaciones del usuario autenticado.
+
+    Las ordenamos de más reciente a más antigua para que cuando se cree
+    una conversación nueva aparezca arriba en la lista.
     """
 
-    conversations = Conversation.objects.filter(user=request.user)
+    conversations = Conversation.objects.filter(user=request.user).order_by('-created_at')
 
     contexto = datos_footer(request)
     contexto['conversations'] = conversations
@@ -79,9 +86,13 @@ def conversation_detail(request, conversation_id):
 
     messages = conversation.message_set.all().order_by('created_at')
 
+    # Cargamos el perfil para aplicar la configuración visual del usuario en los mensajes
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     contexto = datos_footer(request)
     contexto['conversation'] = conversation
     contexto['messages'] = messages
+    contexto['profile'] = profile
 
     return render(request, 'conversation_detail.html', contexto)
 
@@ -90,11 +101,14 @@ def conversation_detail(request, conversation_id):
 def new_conversation(request):
     """
     Crea una conversación nueva.
+
+    Después de crearla, redirige directamente al chat recién creado.
     """
 
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
 
+        # Si el usuario no pone título, ponemos uno automático
         if title == '':
             total_conversations = Conversation.objects.filter(user=request.user).count()
             title = f'Chat {total_conversations + 1}'
@@ -104,7 +118,55 @@ def new_conversation(request):
             title=title
         )
 
+        # Redirigimos al chat recién creado
         return redirect('conversation_detail', conversation_id=conversation.id)
+
+    return redirect('conversation_list')
+
+
+@login_required
+def delete_conversation(request, conversation_id):
+    """
+    Borra una conversación del usuario autenticado.
+
+    Se hace con POST para evitar borrar una conversación simplemente
+    entrando a una URL desde el navegador.
+    """
+
+    conversation = get_object_or_404(
+        Conversation,
+        id=conversation_id,
+        user=request.user
+    )
+
+    if request.method == 'POST':
+        conversation.delete()
+
+    return redirect('conversation_list')
+
+
+@login_required
+def rename_conversation(request, conversation_id):
+    """
+    Cambia el título de una conversación del usuario autenticado.
+
+    Se hace por POST porque el cambio viene desde un formulario.
+    Además, se comprueba que la conversación pertenece al usuario actual.
+    """
+
+    conversation = get_object_or_404(
+        Conversation,
+        id=conversation_id,
+        user=request.user
+    )
+
+    if request.method == 'POST':
+        new_title = request.POST.get('title', '').strip()
+
+        # Solo cambiamos el título si el usuario ha escrito algo
+        if new_title:
+            conversation.title = new_title
+            conversation.save()
 
     return redirect('conversation_list')
 
@@ -122,18 +184,28 @@ def send_message(request, conversation_id):
         user=request.user
     )
 
+    # Cargamos el perfil antes de llamar a la IA.
+    # Así podemos usar la temperatura configurada por el usuario.
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
         content = request.POST.get('content', '').strip()
 
         if content:
+            # Guardamos el mensaje del usuario
             Message.objects.create(
                 conversation=conversation,
                 sender='usuario',
                 content=content
             )
 
-            respuesta_ia = obtener_respuesta_ia(content)
+            # Obtenemos la respuesta de la IA usando la temperatura del perfil
+            respuesta_ia = obtener_respuesta_ia(
+                content,
+                temperature=profile.temperature
+            )
 
+            # Guardamos la respuesta de la IA
             Message.objects.create(
                 conversation=conversation,
                 sender='ia',
@@ -145,6 +217,7 @@ def send_message(request, conversation_id):
     contexto = datos_footer(request)
     contexto['conversation'] = conversation
     contexto['messages'] = messages
+    contexto['profile'] = profile
 
     return render(request, 'messages_partial.html', contexto)
 
@@ -172,19 +245,29 @@ def profile(request):
 def settings_view(request):
     """
     Página de configuración.
-    Permite cambiar alias, modelo por defecto y temperatura.
+    Permite cambiar alias, modelo por defecto, temperatura
+    y el aspecto de los mensajes del chat.
     """
 
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
+        # Alias del usuario
         profile.alias = request.POST.get('alias', '').strip()
 
+        # Modelo preferido
         profile.preferred_model = request.POST.get('preferred_model', '').strip()
 
+        # Temperatura del modelo
         temperature = request.POST.get('temperature', '').strip()
         if temperature != '':
             profile.temperature = temperature
+
+        # Guardamos la configuración visual de los mensajes
+        profile.user_message_background = request.POST.get('user_message_background', 'user-bg-orange')
+        profile.ai_message_background = request.POST.get('ai_message_background', 'ai-bg-yellow')
+        profile.user_message_text_color = request.POST.get('user_message_text_color', 'user-text-black')
+        profile.user_message_font = request.POST.get('user_message_font', 'user-font-arial')
 
         profile.save()
 

@@ -9,21 +9,19 @@
 }
 
 /*
-   Estilo para los mensajes enviados por el usuario.
-   Fondo naranja claro y texto alineado a la derecha.
+   Estilo base para los mensajes enviados por el usuario.
+   Aquí solo dejamos la alineación, porque el fondo, la letra y la fuente
+   se eligen desde Configuración con otras clases.
 */
 .user-message {
-    background-color: #fff3e0;
     text-align: right;
-    border-color: #e67e22;
 }
 
 /*
-   Estilo para los mensajes de la IA.
-   Fondo gris claro y texto alineado a la izquierda.
+   Estilo base para los mensajes de la IA.
+   Aquí solo dejamos la alineación, porque el fondo se puede elegir aparte.
 */
 .ai-message {
-    background-color: #f1f3f5;
     text-align: left;
 }
 
@@ -80,7 +78,7 @@
 
 /*
    Cambio sencillo para que el botón principal del contenido salga en naranja.
-   En el chat afecta al botón Enviar.
+   En el chat afecta al botón Enviar y en configuración al botón Guardar.
 */
 #contenido .btn-primary {
     background-color: #e67e22;
@@ -93,4 +91,72 @@
 #contenido .btn-primary:hover {
     background-color: #b85c00;
     border-color: #b85c00;
+}
+
+/*
+   Colores de fondo disponibles para los mensajes del usuario.
+*/
+.user-bg-orange {
+    background-color: #fff3e0;
+    border-color: #e67e22;
+}
+
+.user-bg-blue {
+    background-color: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.user-bg-green {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+}
+
+/*
+   Colores de fondo disponibles para los mensajes de la IA.
+*/
+.ai-bg-yellow {
+    background-color: #fef9c3;
+    border-color: #eab308;
+}
+
+.ai-bg-light-gray {
+    background-color: #f1f3f5;
+    border-color: #adb5bd;
+}
+
+.ai-bg-light-red {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+}
+
+/*
+   Colores de letra disponibles para todos los mensajes del chat.
+   Se aplican tanto a los mensajes del usuario como a los de la IA.
+*/
+.user-text-black {
+    color: #212529;
+}
+
+.user-text-blue {
+    color: #1d4ed8;
+}
+
+.user-text-red {
+    color: #991b1b;
+}
+
+/*
+   Tipos de letra disponibles para todos los mensajes del chat.
+   Se aplican tanto a los mensajes del usuario como a los de la IA.
+*/
+.user-font-arial {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.user-font-times {
+    font-family: "Times New Roman", Times, serif;
+}
+
+.user-font-courier {
+    font-family: "Courier New", Courier, monospace;
 }

@@ -1,25 +1,29 @@
 {% extends 'base.html' %}
-<!-- Hereda cabecera, menú, contenido y pie -->
+<!-- Hereda la estructura general de base.html -->
 
 {% block title %}Principal{% endblock %}
 
 {% block content %}
-    <!-- Encabezado de la página principal -->
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h2 class="h2">Principal</h2>
-    </div>
+    <!-- Título principal de la página de inicio -->
+    <h2 class="h2">Bienvenido a ChatIA</h2>
 
-    <!-- Descripción breve de la aplicación -->
-    <p class="lead">Aplicación web de chat con IA desarrollada en Django.</p>
-    <p>Aquí puedes crear conversaciones, guardar mensajes y gestionar tu configuración.</p>
+    <hr>
 
-    <!--
-        Si el usuario está autenticado, le llevamos a sus chats.
-        Si no, le llevamos al login.
-    -->
-    {% if user.is_authenticated %}
-        <a href="{% url 'conversation_list' %}" class="btn btn-primary">Ir a mis chats</a>
-    {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
-    {% endif %}
+    <!-- Texto de presentación de la aplicación -->
+    <p class="lead">
+        Un espacio sencillo para hablar con una IA y organizar tus conversaciones.
+    </p>
+
+    <p>
+        Puedes crear chats, guardar tus dudas, revisar respuestas anteriores y personalizar cómo se ven tus mensajes.
+    </p>
+
+    <p>
+        Empieza cuando quieras y deja que ChatIA te ayude a resolver tus preguntas paso a paso.
+    </p>
+
+    <!-- Botón para acceder a la zona de conversaciones -->
+    <a href="{% url 'conversation_list' %}" class="btn btn-primary">
+        Empezar ahora
+    </a>
 {% endblock %}

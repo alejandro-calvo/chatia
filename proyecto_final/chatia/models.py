@@ -53,5 +53,17 @@ class UserProfile(models.Model):
 
     temperature = models.DecimalField(max_digits=2, decimal_places=1, default=0.7)
 
+    # Color de fondo elegido para los mensajes del usuario
+    user_message_background = models.CharField(max_length=30, default='user-bg-orange')
+
+    # Color de fondo elegido para los mensajes de la IA
+    ai_message_background = models.CharField(max_length=30, default='ai-bg-yellow')
+
+    # Color de letra elegido para los mensajes del chat
+    user_message_text_color = models.CharField(max_length=30, default='user-text-black')
+
+    # Tipo de letra elegido para los mensajes del chat
+    user_message_font = models.CharField(max_length=30, default='user-font-arial')
+
     def __str__(self):
         return self.user.username

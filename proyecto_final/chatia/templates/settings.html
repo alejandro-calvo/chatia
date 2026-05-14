@@ -11,19 +11,126 @@
     <form method="post" class="w-75">
         {% csrf_token %}
 
+        <!-- Alias del usuario -->
         <div class="mb-3">
             <label for="alias" class="form-label">Alias</label>
             <input type="text" id="alias" name="alias" value="{{ profile.alias }}" class="form-control">
         </div>
 
+        <!-- Modelo por defecto -->
         <div class="mb-3">
             <label for="preferred_model" class="form-label">Modelo por defecto</label>
             <input type="text" id="preferred_model" name="preferred_model" value="{{ profile.preferred_model }}" class="form-control">
         </div>
 
+        <!-- Temperatura -->
         <div class="mb-3">
             <label for="temperature" class="form-label">Temperatura</label>
             <input type="number" id="temperature" name="temperature" step="0.1" min="0" max="1" value="{{ profile.temperature }}" class="form-control">
+        </div>
+
+        <!-- Color de fondo de los mensajes del usuario -->
+        <div class="mb-3">
+            <label for="user_message_background" class="form-label">Color de fondo de mis mensajes</label>
+            <select id="user_message_background" name="user_message_background" class="form-select">
+
+                {% if profile.user_message_background == 'user-bg-orange' %}
+                    <option value="user-bg-orange" selected>Naranja claro</option>
+                {% else %}
+                    <option value="user-bg-orange">Naranja claro</option>
+                {% endif %}
+
+                {% if profile.user_message_background == 'user-bg-blue' %}
+                    <option value="user-bg-blue" selected>Azul claro</option>
+                {% else %}
+                    <option value="user-bg-blue">Azul claro</option>
+                {% endif %}
+
+                {% if profile.user_message_background == 'user-bg-green' %}
+                    <option value="user-bg-green" selected>Verde claro</option>
+                {% else %}
+                    <option value="user-bg-green">Verde claro</option>
+                {% endif %}
+
+            </select>
+        </div>
+
+        <!-- Color de fondo de los mensajes de la IA -->
+        <div class="mb-3">
+            <label for="ai_message_background" class="form-label">Color de fondo de los mensajes de la IA</label>
+            <select id="ai_message_background" name="ai_message_background" class="form-select">
+
+                {% if profile.ai_message_background == 'ai-bg-yellow' %}
+                    <option value="ai-bg-yellow" selected>Amarillo claro</option>
+                {% else %}
+                    <option value="ai-bg-yellow">Amarillo claro</option>
+                {% endif %}
+
+                {% if profile.ai_message_background == 'ai-bg-light-gray' %}
+                    <option value="ai-bg-light-gray" selected>Gris claro</option>
+                {% else %}
+                    <option value="ai-bg-light-gray">Gris claro</option>
+                {% endif %}
+
+                {% if profile.ai_message_background == 'ai-bg-light-red' %}
+                    <option value="ai-bg-light-red" selected>Rojo claro</option>
+                {% else %}
+                    <option value="ai-bg-light-red">Rojo claro</option>
+                {% endif %}
+
+            </select>
+        </div>
+
+        <!-- Color de letra de los mensajes del chat -->
+        <div class="mb-3">
+            <label for="user_message_text_color" class="form-label">Color de letra de los mensajes</label>
+            <select id="user_message_text_color" name="user_message_text_color" class="form-select">
+
+                {% if profile.user_message_text_color == 'user-text-black' %}
+                    <option value="user-text-black" selected>Negro</option>
+                {% else %}
+                    <option value="user-text-black">Negro</option>
+                {% endif %}
+
+                {% if profile.user_message_text_color == 'user-text-blue' %}
+                    <option value="user-text-blue" selected>Azul oscuro</option>
+                {% else %}
+                    <option value="user-text-blue">Azul oscuro</option>
+                {% endif %}
+
+                {% if profile.user_message_text_color == 'user-text-red' %}
+                    <option value="user-text-red" selected>Rojo oscuro</option>
+                {% else %}
+                    <option value="user-text-red">Rojo oscuro</option>
+                {% endif %}
+
+            </select>
+        </div>
+
+        <!-- Tipo de letra de los mensajes del chat -->
+        <div class="mb-3">
+            <label for="user_message_font" class="form-label">Tipo de letra de los mensajes</label>
+            <select id="user_message_font" name="user_message_font" class="form-select">
+
+                {% if profile.user_message_font == 'user-font-arial' %}
+                    <option value="user-font-arial" selected>Arial</option>
+                {% else %}
+                    <option value="user-font-arial">Arial</option>
+                {% endif %}
+
+                {% if profile.user_message_font == 'user-font-times' %}
+                    <option value="user-font-times" selected>Times New Roman</option>
+                {% else %}
+                    <option value="user-font-times">Times New Roman</option>
+                {% endif %}
+
+                {% if profile.user_message_font == 'user-font-courier' %}
+                    <option value="user-font-courier" selected>Courier New</option>
+                {% else %}
+                    <option value="user-font-courier">Courier New</option>
+                {% endif %}
+
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Guardar configuración</button>

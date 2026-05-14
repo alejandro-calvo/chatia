@@ -1,15 +1,125 @@
 {% extends 'base.html' %}
-<!-- Hereda la estructura común -->
+<!-- Hereda la estructura general de la aplicación -->
 
 {% block title %}Ayuda{% endblock %}
 
 {% block content %}
-    <!-- Encabezado de la página -->
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <!-- Título de la página -->
+    <div class="pb-2 mb-3 border-bottom">
         <h2 class="h2">Ayuda</h2>
     </div>
 
-    <!-- Texto explicativo básico sobre la aplicación -->
-    <p>ChatIA es una aplicación web que permite crear conversaciones y guardar mensajes.</p>
-    <p>Desde la sección de chats puedes crear conversaciones nuevas y enviar mensajes.</p>
+    <!-- Explicación general -->
+    <h3 class="h5">¿Qué es ChatIA?</h3>
+
+    <p>
+        ChatIA es una aplicación web de chat con inteligencia artificial hecha con Django.
+        La idea es poder crear conversaciones, escribir preguntas y guardar el historial
+        para poder volver a consultarlo más adelante.
+    </p>
+
+    <p>
+        Funciona de forma parecida a un chat normal: tú escribes un mensaje, la IA responde
+        y la conversación se va guardando automáticamente.
+    </p>
+
+    <hr>
+
+    <!-- Uso de los chats -->
+    <h3 class="h5">¿Cómo se usan los chats?</h3>
+
+    <p>
+        Desde la sección <strong>Chats</strong> puedes crear una conversación nueva.
+        Cada conversación tiene su propio título y sus propios mensajes, así que puedes
+        separar tus dudas por temas.
+    </p>
+
+    <p>
+        Por ejemplo, puedes tener un chat para dudas de Django, otro para estudiar un examen
+        y otro para pedir ayuda con código.
+    </p>
+
+    <p>
+        También puedes volver a conversaciones anteriores, renombrarlas o borrarlas si ya no las necesitas.
+    </p>
+
+    <hr>
+
+    <!-- Configuración -->
+    <h3 class="h5">Configuración del usuario</h3>
+
+    <p>
+        En la página de <strong>Configuración</strong> puedes cambiar algunos datos de tu perfil,
+        como el alias, el modelo por defecto y la temperatura.
+    </p>
+
+    <p>
+        Además, puedes personalizar el aspecto del chat: el color de tus mensajes, el color de los mensajes
+        de la IA, el color de la letra y el tipo de letra. Así cada usuario puede tener el chat un poco
+        a su gusto.
+    </p>
+
+    <hr>
+
+    <!-- Temperatura de la IA -->
+    <h3 class="h5">¿Qué es la temperatura?</h3>
+
+    <p>
+        La temperatura es un valor que cambia la forma en la que responde la IA.
+        Si la temperatura es baja, la respuesta suele ser más directa, seria y predecible.
+        Si la temperatura es más alta, la IA puede responder de forma más creativa y variada.
+    </p>
+
+    <p>
+        Por ejemplo, para preguntas técnicas o código puede venir mejor una temperatura baja.
+        Para pedir ideas, textos o respuestas más abiertas, puede ser más útil una temperatura un poco más alta.
+    </p>
+
+    <p>
+        En esta aplicación cada usuario puede guardar su temperatura preferida desde Configuración.
+        Ese valor se usa cuando se envían mensajes a la IA.
+    </p>
+
+    <hr>
+
+    <!-- Perfil -->
+    <h3 class="h5">Perfil</h3>
+
+    <p>
+        En la página de <strong>Perfil</strong> puedes ver tus datos guardados, tu configuración actual
+        y algunas estadísticas, como el número de chats y mensajes que tienes.
+    </p>
+
+    <hr>
+
+    <!-- Tecnología usada -->
+    <h3 class="h5">Tecnologías usadas</h3>
+
+    <p>
+        Esta práctica está hecha con <strong>Django</strong> para la parte del servidor,
+        <strong>SQLite</strong> para guardar los datos, <strong>Bootstrap</strong> para la maquetación
+        y <strong>HTMX</strong> para actualizar el chat sin recargar toda la página.
+    </p>
+
+    <p>
+        También se usa una API externa de inteligencia artificial para generar las respuestas del chat.
+    </p>
+
+    <hr>
+
+    <!-- Consejos de uso -->
+    <h3 class="h5">Consejos de uso</h3>
+
+    <ul>
+        <li>Crea una conversación distinta para cada tema importante.</li>
+        <li>Usa títulos claros para encontrar tus chats más rápido.</li>
+        <li>Si una conversación ya no te sirve, puedes borrarla desde la lista de chats.</li>
+        <li>Si quieres cambiar el aspecto del chat, ve a Configuración.</li>
+        <li>Si quieres respuestas más serias, usa una temperatura baja.</li>
+        <li>Si quieres respuestas más creativas, prueba con una temperatura más alta.</li>
+    </ul>
+
+    <p class="mt-3 mb-0">
+        En resumen: entra en <strong>Chats</strong>, crea una conversación y empieza a preguntar.
+    </p>
 {% endblock %}
