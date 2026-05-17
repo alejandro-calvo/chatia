@@ -48,11 +48,8 @@ def index(request):
     """
     Página principal pública.
     """
-
     contexto = datos_footer(request)
-
     return render(request, 'index.html', contexto)
-
 
 @login_required
 @never_cache
