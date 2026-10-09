@@ -1,109 +1,403 @@
-# ENTREGA CONVOCATORIA MAYO
+# ChatIA
 
-# ENTREGA DE PRÁCTICA
+ChatIA es una aplicación web desarrollada con Django que permite a usuarios autenticados mantener conversaciones con una inteligencia artificial mediante un modelo LLM externo integrado a través de la API de NVIDIA.
 
-## Datos
+La aplicación permite crear conversaciones, enviar mensajes, recibir respuestas generadas por IA y conservar el historial completo de cada chat en la base de datos.
 
-* Nombre: Alejandro Calvo Candeleda
-* Titulación: Ingeniería Telemática
-* Cuenta en laboratorios: alexcc
-* Cuenta URJC: a.calvoc.2020@alumnos.urjc.es
-* Video básico (url): https://youtu.be/YbV1FdcDAYk
-* Video parte opcional (url): https://youtu.be/3iZyuLXaIuU
-* Despliegue (url): https://alexcc25.pythonanywhere.com
-* Contraseñas:
-  * alex / Arboleda.2736
-  * gemma / Ventanal.0926
-* Cuenta Admin Site: admin / Ironman.10M
+Además, cada usuario dispone de su propio perfil y configuración, pudiendo personalizar tanto el comportamiento del modelo como distintos aspectos visuales de la aplicación.
 
-## Recursos implementados y métodos disponibles para cada recurso
+---
 
-* Recurso: /
-* Métodos disponibles: GET
-* Descripción: Página principal pública de la aplicación.
+## Tecnologías utilizadas
 
-* Recurso: /accounts/login/
-* Métodos disponibles: GET, POST
-* Descripción: Página de inicio de sesión.
+- Python
+- Django
+- HTMX
+- Bootstrap
+- HTML / CSS
+- SQLite
+- Django ORM
+- NVIDIA API
+- JSON
 
-* Recurso: /accounts/logout/
-* Métodos disponibles: POST
-* Descripción: Cierre de sesión del usuario autenticado.
+---
 
-* Recurso: /conversations/
-* Métodos disponibles: GET
-* Descripción: Lista de conversaciones del usuario autenticado.
+## Usuarios de prueba
 
-* Recurso: /conversations/new/
-* Métodos disponibles: POST
-* Descripción: Crea una nueva conversación para el usuario autenticado.
+Para probar la aplicación se pueden utilizar las siguientes cuentas de usuario:
 
-* Recurso: /conversations/<id>/
-* Métodos disponibles: GET
-* Descripción: Muestra una conversación concreta y sus mensajes.
+### Usuario 1
 
-* Recurso: /conversations/<id>/send/
-* Métodos disponibles: POST
-* Descripción: Envía un mensaje a una conversación y actualiza el chat usando HTMX.
+- **Usuario:** `alex`
+- **Contraseña:** `Arboleda.2736`
 
-* Recurso: /conversations/<id>/delete/
-* Métodos disponibles: POST
-* Descripción: Borra una conversación propia del usuario autenticado.
+### Usuario 2
 
-* Recurso: /conversations/<id>/rename/
-* Métodos disponibles: POST
-* Descripción: Cambia el título de una conversación propia del usuario autenticado.
+- **Usuario:** `gemma`
+- **Contraseña:** `Ventanal.0926`
 
-* Recurso: /conversations/<id>/json/
-* Métodos disponibles: GET
-* Descripción: Devuelve una conversación completa en formato JSON.
+Ambas son cuentas de usuario normales y no disponen de permisos de administración.
 
-* Recurso: /profile/
-* Métodos disponibles: GET
-* Descripción: Muestra el perfil del usuario, su configuración y sus estadísticas.
+---
 
-* Recurso: /settings/
-* Métodos disponibles: GET, POST
-* Descripción: Muestra y permite modificar la configuración del usuario.
+# Funcionamiento de la aplicación
 
-* Recurso: /help/
-* Métodos disponibles: GET
-* Descripción: Página de ayuda de la aplicación.
+ChatIA permite que cada usuario disponga de sus propias conversaciones independientes.
 
-* Recurso: /admin/
-* Métodos disponibles: GET, POST
-* Descripción: Admin Site de Django.
+Cada conversación pertenece exclusivamente al usuario que la ha creado, por lo que un usuario no puede acceder a las conversaciones de otros usuarios.
 
-## Resumen parte obligatoria
+## Gestión de conversaciones
 
-ChatIA es una aplicación web hecha con Django que permite a usuarios autenticados mantener conversaciones con una inteligencia artificial.
+La gestión de las sesiones de conversación se ha implementado mediante el modelo `Conversation`.
 
-La aplicación permite crear conversaciones, enviar mensajes, recibir respuestas de un modelo LLM externo y conservar el historial de cada chat en la base de datos. Cada conversación pertenece a un usuario, por lo que cada usuario solo puede ver sus propias conversaciones.
-La gestión de sesiones de conversación se ha implementado mediante el modelo `Conversation`. Desde la página de chats, el usuario puede crear conversaciones nuevas, listar sus conversaciones anteriores, entrar en una conversación para recuperar su historial, renombrarla o borrarla.
-Los mensajes se guardan mediante el modelo `Message`. Cada mensaje está asociado a una conversación y puede pertenecer al usuario o a la IA.
-La aplicación incluye una página de perfil y una página de configuración. Cada usuario tiene un perfil propio mediante el modelo `UserProfile`, donde se guarda su alias, modelo preferido, temperatura y preferencias visuales del chat.
-La integración con la IA se realiza mediante una API externa de NVIDIA Build. La clave de la API se gestiona mediante un fichero `.env`, que no debe subirse al repositorio. La temperatura configurada por el usuario se pasa como parámetro en la llamada al modelo.
-Se usa HTMX en el envío de mensajes para actualizar la conversación sin recargar toda la página. También se ofrece un recurso JSON que devuelve una conversación completa con sus mensajes.
-Todas las páginas salvo la principal están protegidas mediante autenticación de Django. Si un usuario no autenticado intenta acceder a un recurso protegido, se le redirige al formulario de login.
-La aplicación usa Bootstrap para la maquetación, CSS propio para personalizar el aspecto y ficheros estáticos para cargar Bootstrap, el logo y el favicon.
-También se han añadido tests extremo a extremo para comprobar los principales recursos de la aplicación.
+Desde la página de conversaciones, el usuario puede:
 
-## Lista partes opcionales
+- Crear nuevas conversaciones.
+- Consultar conversaciones anteriores.
+- Entrar en una conversación y recuperar todo su historial.
+- Renombrar conversaciones.
+- Eliminar conversaciones propias.
 
-* Nombre parte: Favicon e imagen de cabecera
-Se ha añadido una imagen propia cargada desde la carpeta `static`. Esta imagen se usa como logo en la cabecera de la aplicación y también como favicon de la pestaña del navegador.
+Cada conversación está asociada al usuario autenticado que la creó.
 
-* Nombre parte: Personalización visual del chat por usuario
-Cada usuario puede personalizar el aspecto de los mensajes del chat desde la página de configuración. Puede elegir el fondo de sus mensajes, el fondo de los mensajes de la IA, el color de letra y el tipo de letra de los mensajes.
+---
 
-* Nombre parte: Renombrado de conversaciones
-Se ha añadido la posibilidad de cambiar el título de una conversación desde la lista de chats. El cambio se realiza mediante POST y solo afecta a conversaciones del usuario autenticado.
+## Gestión de mensajes
 
-* Nombre parte: Borrado de conversaciones
-Se ha añadido la posibilidad de borrar conversaciones propias desde la lista de chats. El borrado se realiza mediante POST y con protección CSRF.
+Los mensajes se almacenan mediante el modelo `Message`.
 
-* Nombre parte: Limpieza básica de respuestas de la IA
-Antes de guardar la respuesta de la IA, se limpian algunos símbolos de Markdown para que el texto se vea mejor en el chat, manteniendo los saltos de línea.
+Cada mensaje está asociado a una conversación y puede pertenecer a:
 
-* Nombre parte: Uso real de la temperatura configurada por el usuario
-La temperatura guardada en la configuración del usuario se usa en la llamada a la API del modelo LLM, de forma que cada usuario puede ajustar el comportamiento de las respuestas.
+- El usuario.
+- La inteligencia artificial.
+
+De esta forma, la aplicación conserva el historial completo de cada conversación y puede recuperarlo cuando el usuario vuelve a acceder a ella.
+
+---
+
+## Perfil y configuración del usuario
+
+Cada usuario dispone de un perfil propio mediante el modelo `UserProfile`.
+
+En este perfil se almacenan diferentes datos y preferencias:
+
+- Alias.
+- Modelo preferido.
+- Temperatura del modelo.
+- Preferencias visuales del chat.
+
+Desde la página de configuración, cada usuario puede modificar estos valores de forma independiente.
+
+---
+
+## Integración con inteligencia artificial
+
+La integración con la inteligencia artificial se realiza mediante una API externa de **NVIDIA Build**.
+
+Cuando un usuario envía un mensaje:
+
+1. El mensaje es recibido por Django.
+2. Se almacena en la conversación correspondiente.
+3. La aplicación realiza una petición al modelo LLM mediante la API de NVIDIA.
+4. Se utiliza la temperatura configurada por el usuario como parámetro de la petición.
+5. Se recibe la respuesta generada por el modelo.
+6. La respuesta se procesa y se almacena como un nuevo mensaje.
+7. El contenido actualizado de la conversación se muestra al usuario.
+
+Antes de almacenar la respuesta generada por la IA se realiza una limpieza básica de algunos símbolos Markdown para mejorar su representación dentro del chat, manteniendo los saltos de línea.
+
+---
+
+## Uso de HTMX
+
+HTMX se utiliza durante el envío de mensajes para actualizar la conversación de forma dinámica.
+
+Esto permite actualizar únicamente la parte necesaria de la interfaz sin recargar completamente la página después de cada mensaje.
+
+El proceso general es:
+
+1. El usuario envía un mensaje.
+2. HTMX realiza la petición al backend.
+3. Django procesa el mensaje y consulta el modelo de IA.
+4. Se guardan los nuevos mensajes.
+5. Django devuelve el fragmento HTML actualizado.
+6. HTMX sustituye únicamente la parte correspondiente del chat.
+
+---
+
+# Recursos implementados
+
+La aplicación expone los siguientes recursos:
+
+| Recurso | Métodos | Descripción |
+|---|---|---|
+| `/` | `GET` | Página principal pública de la aplicación |
+| `/accounts/login/` | `GET`, `POST` | Formulario e inicio de sesión |
+| `/accounts/logout/` | `POST` | Cierre de sesión del usuario autenticado |
+| `/conversations/` | `GET` | Lista las conversaciones del usuario autenticado |
+| `/conversations/new/` | `POST` | Crea una nueva conversación |
+| `/conversations/<id>/` | `GET` | Muestra una conversación concreta junto con sus mensajes |
+| `/conversations/<id>/send/` | `POST` | Envía un mensaje y actualiza el chat mediante HTMX |
+| `/conversations/<id>/delete/` | `POST` | Elimina una conversación perteneciente al usuario |
+| `/conversations/<id>/rename/` | `POST` | Modifica el título de una conversación |
+| `/conversations/<id>/json/` | `GET` | Devuelve una conversación completa y sus mensajes en formato JSON |
+| `/profile/` | `GET` | Muestra el perfil, configuración y estadísticas del usuario |
+| `/settings/` | `GET`, `POST` | Muestra y permite modificar la configuración del usuario |
+| `/help/` | `GET` | Página de ayuda de la aplicación |
+| `/admin/` | `GET`, `POST` | Panel de administración proporcionado por Django |
+
+---
+
+# Configuración de la API de NVIDIA
+
+Para utilizar las funcionalidades de inteligencia artificial es necesario disponer de una **API Key de NVIDIA**.
+
+La clave no se incluye en el repositorio por motivos de seguridad.
+
+La aplicación obtiene esta información desde un fichero `.env`.
+
+## 1. Obtener una API Key
+
+Es necesario disponer de una API Key válida para acceder al servicio utilizado de NVIDIA Build.
+
+Cada persona que ejecute el proyecto debe utilizar su propia clave.
+
+## 2. Crear el archivo `.env`
+
+Dentro del proyecto se debe crear un archivo llamado:
+
+```text
+.env
+```
+
+En él se configura la clave utilizada para realizar las peticiones a NVIDIA.
+
+Por ejemplo:
+
+```env
+NVIDIA_API_KEY=tu_api_key_de_nvidia
+```
+
+Sustituye `tu_api_key_de_nvidia` por tu propia clave.
+
+## 3. Proteger la API Key
+
+El fichero `.env` contiene información sensible y no debe subirse al repositorio.
+
+Debe estar incluido en `.gitignore`:
+
+```gitignore
+.env
+```
+
+De esta forma cada usuario puede utilizar sus propias credenciales sin almacenarlas públicamente en GitHub.
+
+---
+
+# Puesta en marcha
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/alejandro-calvo/chatia.git
+cd chatia
+```
+
+## 2. Crear un entorno virtual
+
+```bash
+python -m venv venv
+```
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+## 3. Instalar las dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+## 4. Configurar la API de NVIDIA
+
+Crea el fichero `.env` e introduce tu propia API Key de NVIDIA siguiendo las instrucciones de la sección anterior.
+
+## 5. Aplicar las migraciones
+
+```bash
+python manage.py migrate
+```
+
+## 6. Iniciar el servidor
+
+```bash
+python manage.py runserver
+```
+
+La aplicación estará disponible normalmente en:
+
+```text
+http://127.0.0.1:8000/
+```
+
+---
+
+# Cómo utilizar ChatIA
+
+Una vez iniciada la aplicación:
+
+1. Accede a la página principal.
+2. Inicia sesión con una cuenta de usuario.
+3. Accede a la sección de conversaciones.
+4. Crea una nueva conversación.
+5. Entra en la conversación.
+6. Escribe un mensaje.
+7. La aplicación enviará el contenido al modelo LLM mediante la API de NVIDIA.
+8. La respuesta aparecerá automáticamente en el chat.
+9. Tanto el mensaje del usuario como la respuesta de la IA quedarán almacenados.
+10. Posteriormente se podrá volver a acceder a la conversación y recuperar todo su historial.
+
+Desde la lista de conversaciones también es posible:
+
+- Crear nuevas conversaciones.
+- Recuperar conversaciones anteriores.
+- Renombrar una conversación.
+- Eliminar una conversación.
+
+Desde la página de configuración se pueden modificar las preferencias individuales del usuario.
+
+---
+
+# Funcionalidades adicionales
+
+## Favicon e imagen de cabecera
+
+Se ha añadido una imagen propia cargada desde la carpeta `static`.
+
+Esta imagen se utiliza tanto como logo en la cabecera de la aplicación como favicon de la pestaña del navegador.
+
+---
+
+## Personalización visual del chat
+
+Cada usuario puede personalizar el aspecto de los mensajes desde la página de configuración.
+
+Es posible modificar:
+
+- Fondo de los mensajes del usuario.
+- Fondo de los mensajes de la IA.
+- Color de la letra.
+- Tipo de letra utilizado en los mensajes.
+
+Estas preferencias se almacenan individualmente para cada usuario.
+
+---
+
+## Renombrado de conversaciones
+
+Las conversaciones pueden cambiar de título desde la lista de chats.
+
+La modificación se realiza mediante una petición `POST` y únicamente afecta a conversaciones pertenecientes al usuario autenticado.
+
+---
+
+## Borrado de conversaciones
+
+Los usuarios pueden eliminar sus propias conversaciones desde la lista de chats.
+
+La operación se realiza mediante una petición `POST` y utiliza protección CSRF de Django.
+
+---
+
+## Limpieza de respuestas de la IA
+
+Antes de guardar las respuestas generadas por el modelo, la aplicación elimina algunos símbolos Markdown para mejorar su visualización en el chat.
+
+Los saltos de línea de las respuestas se mantienen.
+
+---
+
+## Temperatura configurable
+
+Cada usuario puede establecer una temperatura desde su página de configuración.
+
+Este valor no es únicamente visual, sino que se utiliza realmente como parámetro en la llamada a la API del modelo LLM.
+
+Esto permite modificar el comportamiento de las respuestas de forma individual para cada usuario.
+
+---
+
+## Representación JSON de conversaciones
+
+La aplicación dispone de un recurso:
+
+```text
+/conversations/<id>/json/
+```
+
+que permite recuperar una conversación completa junto con sus mensajes en formato JSON.
+
+---
+
+# Autenticación y seguridad
+
+Todas las páginas de la aplicación, salvo la página principal pública, están protegidas mediante el sistema de autenticación de Django.
+
+Si un usuario no autenticado intenta acceder a un recurso protegido, es redirigido al formulario de inicio de sesión.
+
+Además:
+
+- Cada conversación está asociada a un usuario.
+- Cada usuario solo puede consultar y modificar sus propias conversaciones.
+- Las operaciones de modificación utilizan peticiones `POST`.
+- Las operaciones correspondientes cuentan con protección CSRF.
+- La API Key de NVIDIA se almacena mediante un fichero `.env`.
+- Las credenciales sensibles no se incluyen en el repositorio público.
+
+---
+
+# Interfaz
+
+La aplicación utiliza **Bootstrap** para la maquetación general y CSS propio para personalizar la interfaz.
+
+Los ficheros estáticos se utilizan para cargar:
+
+- Bootstrap.
+- Estilos personalizados.
+- Logo.
+- Favicon.
+
+---
+
+# Tests
+
+Se han añadido tests extremo a extremo para comprobar los principales recursos y funcionalidades de la aplicación.
+
+Estos tests permiten comprobar el comportamiento de las partes principales del sistema, incluyendo acceso a recursos, autenticación y funcionamiento general de la aplicación.
+
+---
+
+# Contexto del proyecto
+
+ChatIA fue desarrollado como proyecto académico durante el **Grado en Ingeniería Telemática de la Universidad Rey Juan Carlos**.
+
+El objetivo principal fue desarrollar una aplicación web completa utilizando Django e integrar en un mismo proyecto:
+
+- Autenticación de usuarios.
+- Persistencia de información.
+- Gestión de conversaciones y mensajes.
+- Interacción dinámica mediante HTMX.
+- Integración con un modelo LLM externo.
+- Configuración individual por usuario.
+- Representación de información mediante JSON.
+- Seguridad y control de acceso.
+- Tests de funcionamiento.
